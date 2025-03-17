@@ -1,0 +1,134 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MemCoin {
+  id                       String          @id @default(cuid())
+  symbol                   String          @unique
+  name                     String
+  logo                     String?
+  currentPrice             Float
+  priceChange24h           Float
+  priceChangePercentage24h Float
+  marketCap                Float
+  volume24h                Float
+  circulatingSupply        Float?
+  totalSupply              Float?
+  ath                      Float
+  athDate                  DateTime
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+  rank                     Int?
+  exchanges                String[]
+  socialScore              Float           @default(0)
+  communityGrowth          Float           @default(0)
+  liquidityScore           Float           @default(0)
+  developmentActivity      Float?
+  successProbability       Float?
+  alerts                   Alert[]
+  socialMentions           SocialMention[]
+  priceHistory             PriceHistory[]
+  watchlists               WatchlistItem[]
+}
+
+model PriceHistory {
+  id        String   @id @default(cuid())
+  memCoinId String
+  price     Float
+  timestamp DateTime
+  volume    Float
+  memCoin   MemCoin  @relation(fields: [memCoinId], references: [id], onDelete: Cascade)
+
+  @@index([memCoinId, timestamp])
+}
+
+model SocialMention {
+  id         String   @id @default(cuid())
+  memCoinId  String
+  platform   String // Twitter, Reddit, Telegram, etc.
+  postId     String
+  content    String
+  sentiment  Float
+  engagement Int
+  timestamp  DateTime
+  url        String?
+  memCoin    MemCoin  @relation(fields: [memCoinId], references: [id], onDelete: Cascade)
+
+  @@index([memCoinId, timestamp])
+  @@index([platform, timestamp])
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  memCoinId String
+  type      String // price_change, volume_spike, social_trend, etc.
+  message   String
+  createdAt DateTime @default(now())
+  isRead    Boolean  @default(false)
+  priority  Int      @default(1) // 1 - low, 2 - medium, 3 - high
+  memCoin   MemCoin  @relation(fields: [memCoinId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([memCoinId, createdAt])
+}
+
+model Watchlist {
+  id        String          @id @default(cuid())
+  name      String
+  userId    String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     WatchlistItem[]
+
+  @@index([userId])
+}
+
+model WatchlistItem {
+  id          String    @id @default(cuid())
+  watchlistId String
+  memCoinId   String
+  addedAt     DateTime  @default(now())
+  notes       String?
+  targetPrice Float?
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  memCoin     MemCoin   @relation(fields: [memCoinId], references: [id], onDelete: Cascade)
+
+  @@unique([watchlistId, memCoinId])
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String?
+  email         String      @unique
+  emailVerified DateTime?
+  password      String? // Hashed password
+  image         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  watchlists    Watchlist[]
+  alerts        Alert[]
+  settings      Json? // User preferences as JSON
+
+  @@index([email])
+}
+
+model PredictionModel {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  version     String
+  accuracy    Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  parameters  Json // Model parameters as JSON
+  active      Boolean  @default(false)
+}
