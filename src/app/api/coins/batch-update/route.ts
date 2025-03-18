@@ -3,42 +3,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
-type CoinRaw = {
-  id: string;
-  symbol: string;
-  name: string;
-  image: string;
-  current_price: number;
-  market_cap: number;
-  market_cap_rank: number;
-  fully_diluted_valuation: number;
-  total_volume: number;
-  high_24h: number;
-  low_24h: number;
-  price_change_24h: number;
-  price_change_percentage_24h: number;
-  market_cap_change_24h: number;
-  market_cap_change_percentage_24h: number;
-  circulating_supply: number;
-  total_supply: number;
-  max_supply: number;
-  ath: number;
-  ath_change_percentage: number;
-  ath_date: string;
-  atl: number;
-  atl_change_percentage: number;
-  atl_date: string;
-  roi: number;
-  last_updated: string;
-  price_change_percentage_24h_in_currency: number;
-};
-
 export async function POST(request: NextRequest) {
   try {
     // Pobierz dane z requestu
     const coinsData = await request.json();
-
-    console.log("coinsData", coinsData);
 
     // Sprawdź, czy dane są tablicą
     if (!Array.isArray(coinsData)) {
@@ -47,25 +15,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    const transformedData = coinsData[0].json.map((coin: CoinRaw) => {
-      return {
-        json: {
-          symbol: coin.symbol.toUpperCase(),
-          name: coin.name,
-          logo: coin.image,
-          currentPrice: coin.current_price,
-          priceChange24h: coin.price_change_24h || 0,
-          priceChangePercentage24h: coin.price_change_percentage_24h || 0,
-          marketCap: coin.market_cap || 0,
-          volume24h: coin.total_volume || 0,
-          circulatingSupply: coin.circulating_supply,
-          totalSupply: coin.total_supply,
-          ath: coin.ath,
-          athDate: coin.ath_date,
-        },
-      };
-    });
 
     // Liczniki dla monitorowania aktualizacji
     let updated = 0;
@@ -76,8 +25,8 @@ export async function POST(request: NextRequest) {
     // Przetwarzaj dane wsadowo dla lepszej wydajności
     const batchSize = 50;
 
-    for (let i = 0; i < transformedData.length; i += batchSize) {
-      const batch = transformedData.slice(i, i + batchSize);
+    for (let i = 0; i < coinsData.length; i += batchSize) {
+      const batch = coinsData.slice(i, i + batchSize);
 
       // Przetwarzaj każdą monetę w partii
       await Promise.all(
