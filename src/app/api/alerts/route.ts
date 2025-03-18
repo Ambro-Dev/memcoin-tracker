@@ -92,10 +92,17 @@ export async function POST(request: NextRequest) {
 }
 
 // Aktualizuj alert (np. oznacz jako przeczytany)
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Missing required field: id" },
+      { status: 400 }
+    );
+  }
+
   try {
     const session = await getServerSession(authOptions);
 
@@ -104,7 +111,6 @@ export async function PUT(
     }
 
     const userId = session.user.id as string;
-    const { id } = params;
     const body = await request.json();
 
     // Sprawdź czy alert istnieje i należy do użytkownika
@@ -136,10 +142,17 @@ export async function PUT(
 }
 
 // Usuń alert
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const id = searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Missing required field: id" },
+      { status: 400 }
+    );
+  }
+
   try {
     const session = await getServerSession(authOptions);
 
@@ -148,7 +161,6 @@ export async function DELETE(
     }
 
     const userId = session.user.id as string;
-    const { id } = params;
 
     // Sprawdź czy alert istnieje i należy do użytkownika
     const alert = await prisma.alert.findFirst({
