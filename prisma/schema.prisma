@@ -10,7 +10,7 @@ datasource db {
 
 model MemCoin {
   id                       String          @id @default(cuid())
-  symbol                   String          @unique
+  symbol                   String
   name                     String
   logo                     String?
   currentPrice             Float
