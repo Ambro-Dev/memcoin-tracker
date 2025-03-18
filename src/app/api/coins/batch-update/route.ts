@@ -38,6 +38,8 @@ export async function POST(request: NextRequest) {
     // Pobierz dane z requestu
     const coinsData = await request.json();
 
+    console.log("coinsData", coinsData);
+
     // Sprawdź, czy dane są tablicą
     if (!Array.isArray(coinsData)) {
       return NextResponse.json(
