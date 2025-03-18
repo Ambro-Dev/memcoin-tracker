@@ -56,7 +56,7 @@ export default function HomePage() {
             <div className="mt-10 flex items-center gap-x-6">
               <Link
                 href="/auth/register"
-                className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-blue-600"
               >
                 Rozpocznij za darmo
               </Link>
@@ -76,7 +76,7 @@ export default function HomePage() {
                   alt="Dashboard aplikacji"
                   width={1280}
                   height={720}
-                  className="w-[76rem] rounded-md shadow-2xl ring-1 ring-gray-900/10"
+                  className="w-[62rem] rounded-md shadow-2xl ring-1 ring-gray-900/10"
                   priority
                 />
               </div>
@@ -279,13 +279,13 @@ export default function HomePage() {
           <div className="mx-auto mt-10 flex max-w-md gap-x-4 justify-center">
             <Link
               href="/auth/register"
-              className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Zarejestruj się za darmo
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-md border border-white/20 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="rounded-md border border-white/20 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/10 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Zobacz demo
             </Link>
